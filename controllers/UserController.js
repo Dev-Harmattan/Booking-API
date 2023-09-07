@@ -14,6 +14,16 @@ class UserController {
     }
   });
 
+  static getUserBookings = asyncHandler(async (req, res, next) => {
+    try {
+      const { userEmail } = req.body;
+      const userBookings = await UserService.getUserBookings(userEmail);
+      res.status(util.OK).json(ApiResponse.OK({ data: userBookings }));
+    } catch (error) {
+      next(error);
+    }
+  });
+
   static bookVisit = asyncHandler(async (req, res, next) => {
     try {
       const { email, date } = req.body;
@@ -71,7 +81,6 @@ class UserController {
     try {
       const { email } = req.body;
       const favorites = await UserService.getFavorites(req, email);
-      console.log(favorites);
       res.status(util.OK).json(ApiResponse.OK({ data: favorites }));
     } catch (error) {
       next(error);

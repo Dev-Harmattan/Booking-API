@@ -1,3 +1,4 @@
+import { query } from 'express';
 import { ApiResponse } from '../models/ApiResponse.js';
 import { UserRepository } from '../repositories/UserRepository.js';
 
@@ -9,7 +10,7 @@ class UserService {
         email: email,
       },
     };
-    const user = await UserRepository.User(query);
+    const user = await UserRepository.getUniqueUser(query);
     if (user) {
       throw ApiResponse.Forbidden({
         userMessage: 'User already registered',
@@ -17,6 +18,16 @@ class UserService {
       });
     }
     return await UserRepository.createUser(req.body);
+  }
+
+  static async getUserBookings(email) {
+    const userQuery = {
+      where: {
+        email: email,
+      },
+      select: { bookedVisits: true },
+    };
+    return await UserRepository.getUniqueUser(userQuery);
   }
 
   static async bookVisit(req, id, email, date) {
@@ -120,7 +131,6 @@ class UserService {
   }
 
   static async getFavorites(req, email) {
-    console.log(email);
     const query = {
       where: {
         email: email,
@@ -128,7 +138,6 @@ class UserService {
       select: { favResidenciesID: true },
     };
     const fav = await UserRepository.getUniqueUser(query);
-    console.log(fav, query);
     return fav;
   }
 }
