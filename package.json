@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js",
+    "start": "nodemon index.js",
+    "postinstall": "prisma generate",
     "prisma:push": "npx prisma db push",
     "prisma:generate": "npx prisma generate"
   },
